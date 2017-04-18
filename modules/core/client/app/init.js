@@ -8,11 +8,18 @@
   // Setting HTML5 Location Mode
   angular
     .module(app.applicationModuleName)
-    .config(bootstrapConfig);
+    .config(bootstrapConfig)
+    .constant('LOCALES', {
+      'locales': {
+        'ru_RU': 'Русский',
+        'en_US': 'English'
+      },
+      'preferredLocale': 'en_US'
+    });
 
-  bootstrapConfig.$inject = ['$compileProvider', '$locationProvider', '$httpProvider', '$logProvider'];
+  bootstrapConfig.$inject = ['$compileProvider', '$locationProvider', '$httpProvider', '$logProvider', '$translateProvider', 'tmhDynamicLocaleProvider'];
 
-  function bootstrapConfig($compileProvider, $locationProvider, $httpProvider, $logProvider) {
+  function bootstrapConfig($compileProvider, $locationProvider, $httpProvider, $logProvider, $translateProvider, tmhDynamicLocaleProvider) {
     $locationProvider.html5Mode({
       enabled: true,
       requireBase: false
@@ -24,6 +31,23 @@
     // @link https://docs.angularjs.org/guide/production
     $compileProvider.debugInfoEnabled(app.applicationEnvironment !== 'production');
     $logProvider.debugEnabled(app.applicationEnvironment !== 'production');
+    
+    $translateProvider.useMissingTranslationHandlerLog();
+    $translateProvider.useStaticFilesLoader({
+        prefix: 'resources/locale-',
+        suffix: '.json'
+    });
+
+    $translateProvider.preferredLanguage('en_US');
+
+    tmhDynamicLocaleProvider.localeLocationPattern('public/lib/angular-i18n/angular-locale_{{locale}}.js')
+    // var translations = {
+    //   HEADLINE: 'What an awesome module!',
+    //   PARAGRAPH: 'Srsly!'
+    // };
+
+    // $translateProvider.translations('en', translations);
+    // $translateProvider.preferredLanguage('en');
   }
 
 

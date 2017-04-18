@@ -24,7 +24,16 @@ module.exports = {
         'public/lib/angular-ui-notification/dist/angular-ui-notification.js',
         'public/lib/angular-ui-router/release/angular-ui-router.js',
         'public/lib/owasp-password-strength-test/owasp-password-strength-test.js',
-        // endbower
+        'public/lib/angular-translate/angular-translate.min.js',
+        'public/lib/bower-angular-cookies/angular-cookies.min.js',
+        'public/lib/angular-translate-handler-log/angular-translate-handler-log.min.js',
+        'public/lib/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js',
+        'public/lib/bower-angular-translate-storage-cookie/angular-translate-storage-cookie.min.js',
+        'public/lib/bower-angular-translate-storage-local/angular-translate-storage-local.min.js',
+        'public/lib/angular-dynamic-locale/tmhDynamicLocale.min.js',
+        // 'public/resources/*.json'
+        // 'public/lib/angular-i18n/*.js',
+        //  endbower
       ],
       tests: ['public/lib/angular-mocks/angular-mocks.js']
     },
@@ -40,6 +49,8 @@ module.exports = {
     js: [
       'modules/core/client/app/config.js',
       'modules/core/client/app/init.js',
+      'modules/core/client/app/service.js',
+      'modules/core/client/app/directive.js',
       'modules/*/client/*.js',
       'modules/*/client/**/*.js'
     ],
