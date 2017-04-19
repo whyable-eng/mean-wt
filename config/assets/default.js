@@ -31,8 +31,7 @@ module.exports = {
         'public/lib/bower-angular-translate-storage-cookie/angular-translate-storage-cookie.min.js',
         'public/lib/bower-angular-translate-storage-local/angular-translate-storage-local.min.js',
         'public/lib/angular-dynamic-locale/tmhDynamicLocale.min.js',
-        // 'public/resources/*.json'
-        // 'public/lib/angular-i18n/*.js',
+
         //  endbower
       ],
       tests: ['public/lib/angular-mocks/angular-mocks.js']
@@ -72,5 +71,6 @@ module.exports = {
     config: ['modules/*/server/config/*.js'],
     policies: 'modules/*/server/policies/*.js',
     views: ['modules/*/server/views/*.html']
+    
   }
 };

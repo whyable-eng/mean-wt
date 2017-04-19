@@ -43,6 +43,8 @@ gulp.task('env:dev', function () {
 // Set NODE_ENV to 'production'
 gulp.task('env:prod', function () {
   process.env.NODE_ENV = 'production';
+  // use this command in case your environment throws error 
+  // echo fs.inotify.max_user_watches=582222 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 });
 
 // Nodemon task
