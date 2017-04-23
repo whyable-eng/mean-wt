@@ -9,6 +9,8 @@ var config = require('../config'),
   chalk = require('chalk'),
   seed = require('./seed');
 
+  // console.log(config);
+
 function seedDB() {
   if (config.seedDB && config.seedDB.seed) {
     console.log(chalk.bold.red('Warning:  Database seeding is turned on'));
@@ -24,7 +26,6 @@ module.exports.init = function init(callback) {
     // Initialize express
     var app = express.init(db);
     if (callback) callback(app, db, config);
-
   });
 };
 
@@ -34,6 +35,7 @@ module.exports.start = function start(callback) {
   _this.init(function (app, db, config) {
 
     // Start the app by listening on <port> at <host>
+    
     app.listen(config.port, config.host, function () {
       // Create server URL
       var server = (process.env.NODE_ENV === 'secure' ? 'https://' : 'http://') + config.host + ':' + config.port;

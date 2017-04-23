@@ -240,6 +240,7 @@ gulp.task('wiredep:prod', function () {
               if (!fs.existsSync(fullPath)) {
                 return '\'' + filePath + '\',';
               } else {
+
                 return '\'' + minFilePath + '\',';
               }
             }

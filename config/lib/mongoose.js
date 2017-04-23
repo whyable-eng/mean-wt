@@ -9,8 +9,10 @@ var config = require('../config'),
   mongoose = require('mongoose');
 
 // Load the mongoose models
+
 module.exports.loadModels = function (callback) {
   // Globbing model files
+  console.log(config.files.server)
   config.files.server.models.forEach(function (modelPath) {
     require(path.resolve(modelPath));
   });
@@ -46,3 +48,4 @@ module.exports.disconnect = function (cb) {
     cb(err);
   });
 };
+

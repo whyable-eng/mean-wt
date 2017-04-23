@@ -11,7 +11,9 @@ var _ = require('lodash'),
 
 /**
  * Get files by glob patterns
- */
+*/
+
+
 var getGlobbedPaths = function (globPatterns, excludes) {
   // URL paths regex
   var urlRegex = new RegExp('^(?:[a-z]+:)?\/\/', 'i');
@@ -53,6 +55,7 @@ var getGlobbedPaths = function (globPatterns, excludes) {
 /**
  * Validate NODE_ENV existence
  */
+
 var validateEnvironmentVariable = function () {
   var environmentFiles = glob.sync('./config/env/' + process.env.NODE_ENV + '.js');
   console.log();

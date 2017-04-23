@@ -40,7 +40,7 @@
 
     $translateProvider.preferredLanguage('en_US');
 
-    tmhDynamicLocaleProvider.localeLocationPattern('public/lib/angular-i18n/angular-locale_{{locale}}.js')
+    tmhDynamicLocaleProvider.localeLocationPattern('lib/angular-i18n/angular-locale_{{locale}}.js')
     // var translations = {
     //   HEADLINE: 'What an awesome module!',
     //   PARAGRAPH: 'Srsly!'

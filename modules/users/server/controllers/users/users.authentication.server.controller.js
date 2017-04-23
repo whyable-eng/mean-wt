@@ -7,7 +7,33 @@ var path = require('path'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   mongoose = require('mongoose'),
   passport = require('passport'),
-  User = mongoose.model('User');
+  User = mongoose.model('User'),
+  redis = require("redis"),
+  client = redis.createClient();
+  
+  client.on("error", function (err) {
+    console.log("Error " + err);
+  });
+  
+
+
+  var secretKey = "secretKey";  // put a key in config
+
+  var jsonwebtoken = require('jsonwebtoken');
+
+  function createToken(user) {
+
+    var token = jsonwebtoken.sign({
+      id: user._id,
+      name: user.displayName,
+      username: user.username,
+      role:user.roles
+    }, secretKey, {
+      expirtesInMinute: 1440
+    });
+    return token;
+  }
+
 
 // URLs for which user can't be redirected on signin
 var noReturnUrls = [
@@ -21,7 +47,7 @@ var noReturnUrls = [
 exports.signup = function (req, res) {
   // For security measurement we remove the roles from the req.body object
   delete req.body.roles;
-
+  console.log(req.device)
   // Init user and add missing fields
   var user = new User(req.body);
   user.provider = 'local';
@@ -38,13 +64,21 @@ exports.signup = function (req, res) {
       user.password = undefined;
       user.salt = undefined;
 
-      req.login(user, function (err) {
-        if (err) {
-          res.status(400).send(err);
-        } else {
-          res.json(user);
-        }
-      });
+      if(req.device.type=="desktop"){
+        req.login(user, function (err) {
+          if (err) {
+            res.status(400).send(err);
+          } else {
+            res.json(user);
+          }
+        });
+      }else if(req.device.type=="mobile" || req.device.type=="tablet"){
+          // email verification missing and direct login is enabled
+          // generate jwt token
+          var token=createToken(user)
+          client.set(token,token);
+          res.json({message:"signedup successfully",token:token});
+      }
     }
   });
 };
@@ -53,32 +87,62 @@ exports.signup = function (req, res) {
  * Signin after passport authentication
  */
 exports.signin = function (req, res, next) {
-  passport.authenticate('local', function (err, user, info) {
-    if (err || !user) {
-      res.status(422).send(info);
-    } else {
-      // Remove sensitive data before login
-      user.password = undefined;
-      user.salt = undefined;
 
-      req.login(user, function (err) {
-        if (err) {
-          res.status(400).send(err);
+    passport.authenticate('local', function (err, user, info) {
+        console.log(err,user,info)
+        if (err || !user) {
+          res.status(422).send(info);
         } else {
-          res.json(user);
+          // Remove sensitive data before login
+          user.password = undefined;
+          user.salt = undefined;
+          if(req.device.type=="desktop"){
+              req.login(user, function (err) {
+                if (err) {
+                  res.status(400).send(err);
+                } else {
+                  res.json(user);
+                }
+              });
+          }else if(req.device.type=="mobile" || req.device.type=="tablet"){
+            // generate jwt token 
+            // add token to redis server
+            // add unique id  for each device .... ask agni for no of device restriction if any
+            var token=createToken(user);
+            client.set(token,token);
+            res.json({message:"logged in successfully",token:token});
+          }   
         }
-      });
-    }
-  })(req, res, next);
+    })(req, res, next)
 };
+
+
 
 /**
  * Signout
  */
 exports.signout = function (req, res) {
-  req.logout();
-  res.redirect('/');
+  if(req.device.type=="desktop"){
+    req.logout();
+    res.redirect('/');
+  }else if(req.device.type=="mobile" || req.device.type=="tablet"){
+    // remove token from redis server
+    var token=req.headers['x-access-token'];
+    if(token){
+      client.del(token,function(err,res){
+        //console.log(err,res);
+        if(!err){
+          res.json({message:"successfully logged out"})      
+        }else{
+          res.json({message:"token doesn\'t exist"})
+        }
+      })
+    }
+    
+  }  
 };
+
+
 
 /**
  * OAuth provider call
